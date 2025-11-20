@@ -1,14 +1,22 @@
 # rpg_battle.py
 # Simple RPG Battle Simulator inspired by Baldur's Gate 3
 # Author: Fuad Ismayilbayli
-# Date: 
 # Language: Python 3
 
 from abc import ABC, abstractmethod
 import random
+from typing import Dict
 
+# Race bonuses (расовые бонусы)
+race_bonus: Dict[str, Dict[str, int]] = {
+    "Human": {"health": 5, "damage": 1},
+    "Elf": {"health": 0, "damage": 2},
+    "Half-Elf": {"health": 0, "damage": 1},
+    "Tiefling": {"health": 0, "damage": 2},
+    "Githyanki": {"health": 0, "damage": 0}
+}
 
-#Base Hero Class (Abstraction)
+# Base Hero Class (Abstraction)
 class Hero(ABC):
     """Abstract base class for all heroes."""
 
@@ -16,43 +24,43 @@ class Hero(ABC):
         self.name = name
         self.hero_class = hero_class
         self.race = race
-        self.damage = damage
-        self.health = health
-        self.max_health = health
+        # we apply race bonuses during create personage ( применяем бонусы расы при создании персонажа)
+        bonus = race_bonus.get(race, {"health": 0, "damage": 0})
+        self.damage = damage + bonus.get("damage", 0)
+        self.health = health + bonus.get("health", 0)
+        self.max_health = self.health
 
-    # inst metod attack
+    # Encapsulation: Attack Method ( инкапсуляция: метод атаки)
     def hit(self, target: 'Hero'):
         target.health -= self.damage
         if target.health < 0:
             target.health = 0
         print(f"{self.name} attacks {target.name} for {self.damage} damage. ({target.name} health: {target.health})")
 
-    # insukpasiya restore the hero health
+    # Encapsulation: Restoring Health (инкапсуляция: восстановление здоровья)
     def heal(self, amount: int):
         old_health = self.health
         self.health = min(self.health + amount, self.max_health)
         print(f"{self.name} heals for {amount}. ({old_health} → {self.health})")
 
-    # metod for chang damage
+    # Damage ghance (изменить урон)
     def set_damage(self, value: int):
         if value > 0:
             self.damage = value
         print(f"{self.name}'s damage is now {self.damage}")
 
-    # abstract metod
     @abstractmethod
     def use_special(self, target: 'Hero'):
         pass
 
 
-#Subclasses for different hero types (Inheritance + Polymorphism)
+# Subclasses (Inheritance + Polymorphism)
 
 class Wizard(Hero):
     def __init__(self, name: str, race: str):
         super().__init__(name, "Wizard", race, damage=12, health=80)
 
     def use_special(self, target: Hero):
-        # POliformizm  each class have personal spec att
         dmg = 25
         target.health -= dmg
         if target.health < 0:
@@ -116,7 +124,7 @@ class Warlock(Hero):
         print(f"{self.name} casts Eldritch Blast for {dmg} damage! ({target.name} health: {target.health})")
 
 
-#Factory Pattern (Design Pattern Example)
+# Factory Pattern
 class HeroFactory:
     """Factory to create heroes by name/class."""
     @staticmethod
@@ -137,8 +145,7 @@ class HeroFactory:
             raise ValueError(f"Unknown hero class: {hero_class}")
 
 
-#Example battle simulation
-
+# Example battle simulation
 def battle(hero1: Hero, hero2: Hero):
     print(f"Battle starts: {hero1.name} ({hero1.hero_class}) vs {hero2.name} ({hero2.hero_class})\n")
 
@@ -147,7 +154,7 @@ def battle(hero1: Hero, hero2: Hero):
         attacker = hero1 if turn % 2 == 0 else hero2
         defender = hero2 if turn % 2 == 0 else hero1
 
-        #randomly choose norm attach or spec attack
+        # randomly choose normal attack or special attack
         if random.random() < 0.7:
             attacker.hit(defender)
         else:
@@ -160,11 +167,10 @@ def battle(hero1: Hero, hero2: Hero):
         turn += 1
 
 
-#Main program (example heroes)
+# Main program (example heroes)
 if __name__ == "__main__":
-    #heros for testing
     gale = HeroFactory.create_hero("Gale", "Wizard", "Elf")
-    laezel = HeroFactory.create_hero("Lae’zel", "Fighter", "Githyanki")
+    laezel = HeroFactory.create_hero("Laezel", "Fighter", "Githyanki")
 
     shadowheart = HeroFactory.create_hero("Shadowheart", "Cleric", "Half-Elf")
     halsin = HeroFactory.create_hero("Halsin", "Druid", "Elf")
@@ -172,5 +178,5 @@ if __name__ == "__main__":
     wyll = HeroFactory.create_hero("Wyll", "Warlock", "Human")
     karlach = HeroFactory.create_hero("Karlach", "Barbarian", "Tiefling")
 
-    #fight example
+    # fight example
     battle(gale, laezel)
