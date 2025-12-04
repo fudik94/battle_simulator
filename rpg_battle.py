@@ -1,5 +1,5 @@
-# Simple RPG Battle Simulator (annotated, minimal changes)
-# Author: Fuad Ismayilbayli (adapted)
+# Simple RPG Battle Simulator 
+# Author: Fuad Ismayilbayli 
 # Language: Python 3
 from abc import ABC, abstractmethod
 import random
