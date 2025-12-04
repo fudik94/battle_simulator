@@ -17,9 +17,6 @@ Quick summary
 How to run (Windows PowerShell — recommended)
 1. Open PowerShell.
 2. Change to project folder (example for your path):
-```powershell
-cd 'C:\Users\fuad0\Downloads\IT_MAIN\IT-NKTU\Second_year\rpg_battle_2'
-```
 3. (Optional but recommended) Create and activate a virtual environment:
 ```powershell
 python -m venv .venv
