@@ -1,4 +1,5 @@
 # ⚔️ RPG Battle Simulator
+🎓 **Academic Project**
 
 A small, single-file RPG battle simulator written in Python.  
 This project demonstrates the four OOP pillars, uses a simple Factory pattern, and includes unit tests (pytest). It is intentionally small and easy to run — ready to show in a short demo and to defend design decisions.
